@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { usePayment } from "@/hooks/usePayment";
 
 const plans = [
   {
@@ -16,10 +18,11 @@ const plans = [
     ],
     cta: "Começar Grátis",
     popular: false,
+    planId: "free" as const,
   },
   {
     name: "Premium",
-    price: "19",
+    price: "29,90",
     description: "Para quem quer encantar",
     features: [
       "Cartões ilimitados",
@@ -32,10 +35,11 @@ const plans = [
     ],
     cta: "Assinar Premium",
     popular: true,
+    planId: "premium" as const,
   },
   {
     name: "Família",
-    price: "39",
+    price: "49,90",
     description: "Para toda a família",
     features: [
       "Tudo do Premium",
@@ -46,10 +50,29 @@ const plans = [
     ],
     cta: "Assinar Família",
     popular: false,
+    planId: "family" as const,
   },
 ];
 
 const Pricing = () => {
+  const { user } = useAuth();
+  const { createPayment, isLoading } = usePayment();
+  const navigate = useNavigate();
+
+  const handlePlanClick = async (planId: "free" | "premium" | "family") => {
+    if (planId === "free") {
+      navigate("/auth?mode=signup");
+      return;
+    }
+
+    if (!user) {
+      navigate(`/auth?mode=signup&plan=${planId}`);
+      return;
+    }
+
+    await createPayment(planId);
+  };
+
   return (
     <section id="pricing" className="py-24 lg:py-32 relative">
       <div className="absolute inset-0 bg-festiva-glow opacity-30" />
@@ -126,14 +149,17 @@ const Pricing = () => {
                   ))}
                 </ul>
 
-                <Link to="/auth?mode=signup">
-                  <Button
-                    variant={plan.popular ? "gold" : "gold-outline"}
-                    className="w-full"
-                  >
-                    {plan.cta}
-                  </Button>
-                </Link>
+                <Button
+                  variant={plan.popular ? "gold" : "gold-outline"}
+                  className="w-full"
+                  onClick={() => handlePlanClick(plan.planId)}
+                  disabled={isLoading}
+                >
+                  {isLoading && plan.planId !== "free" ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : null}
+                  {plan.cta}
+                </Button>
               </div>
             </motion.div>
           ))}
