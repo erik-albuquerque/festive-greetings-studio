@@ -94,7 +94,6 @@ serve(async (req) => {
           name: customerName,
           email: user.email,
           cellphone: '11999999999',
-          taxId: '00000000000',
         },
         metadata: {
           user_id: user.id,
