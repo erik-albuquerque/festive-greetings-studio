@@ -58,7 +58,16 @@ serve(async (req) => {
 
     const planConfig = PLANS[plan];
     
-    console.log(`Creating payment for user ${user.id}, plan: ${plan}`);
+    // Get user profile for name
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    const customerName = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Cliente';
+    
+    console.log(`Creating payment for user ${user.id}, plan: ${plan}, name: ${customerName}`);
 
     // Create charge in AbacatePay
     const response = await fetch('https://api.abacatepay.com/v1/billing/create', {
@@ -82,7 +91,10 @@ serve(async (req) => {
         returnUrl: returnUrl || `${req.headers.get('origin')}/dashboard`,
         completionUrl: returnUrl || `${req.headers.get('origin')}/dashboard`,
         customer: {
+          name: customerName,
           email: user.email,
+          cellphone: user.phone || undefined,
+          taxId: undefined,
         },
         metadata: {
           user_id: user.id,
