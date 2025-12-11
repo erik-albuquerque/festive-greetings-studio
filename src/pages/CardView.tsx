@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, Clock, Heart, Gift } from "lucide-react";
 import { motion } from "framer-motion";
+import { getTemplate } from "@/components/CardTemplates";
 
 interface CardData {
   id: string;
@@ -100,42 +101,33 @@ const CardView = () => {
     );
   }
 
+  const template = getTemplate(card.template);
+
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden p-4">
+    <div className={`min-h-screen bg-gradient-to-br ${template.colors.background} flex items-center justify-center relative overflow-hidden p-4`}>
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-festiva-glow" />
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className={`absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br ${template.colors.accent} rounded-full blur-3xl opacity-50`} />
+      <div className={`absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br ${template.colors.accent} rounded-full blur-3xl opacity-30`} />
 
       {/* Floating decorations */}
-      <motion.div
-        animate={{ y: [-10, 10, -10], rotate: [0, 5, 0] }}
-        transition={{ duration: 4, repeat: Infinity }}
-        className="absolute top-20 left-[10%] text-4xl"
-      >
-        ✨
-      </motion.div>
-      <motion.div
-        animate={{ y: [10, -10, 10], rotate: [0, -5, 0] }}
-        transition={{ duration: 5, repeat: Infinity }}
-        className="absolute top-32 right-[15%] text-3xl"
-      >
-        🎄
-      </motion.div>
-      <motion.div
-        animate={{ y: [-15, 15, -15] }}
-        transition={{ duration: 6, repeat: Infinity }}
-        className="absolute bottom-20 left-[20%] text-4xl"
-      >
-        🎁
-      </motion.div>
-      <motion.div
-        animate={{ y: [5, -5, 5] }}
-        transition={{ duration: 3, repeat: Infinity }}
-        className="absolute bottom-32 right-[25%] text-3xl"
-      >
-        ⭐
-      </motion.div>
+      {template.decorations.map((decoration, index) => (
+        <motion.div
+          key={index}
+          animate={{ 
+            y: index % 2 === 0 ? [-10, 10, -10] : [10, -10, 10], 
+            rotate: [0, index % 2 === 0 ? 5 : -5, 0] 
+          }}
+          transition={{ duration: 4 + index, repeat: Infinity }}
+          className={`absolute text-3xl md:text-4xl ${
+            index === 0 ? "top-20 left-[10%]" :
+            index === 1 ? "top-32 right-[15%]" :
+            index === 2 ? "bottom-20 left-[20%]" :
+            "bottom-32 right-[25%]"
+          }`}
+        >
+          {decoration}
+        </motion.div>
+      ))}
 
       {/* Card */}
       <motion.div
@@ -144,15 +136,15 @@ const CardView = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-lg relative z-10"
       >
-        <div className="glass-card rounded-3xl p-8 md:p-12 text-center border-primary/20">
+        <div className={`glass-card rounded-3xl p-8 md:p-12 text-center ${template.colors.card}`}>
           {/* Icon */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring" }}
-            className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center mx-auto mb-8"
+            className={`w-24 h-24 rounded-full bg-gradient-to-br ${template.colors.accent} flex items-center justify-center mx-auto mb-8`}
           >
-            <span className="text-5xl">🎄</span>
+            <span className="text-5xl">{template.emoji}</span>
           </motion.div>
 
           {/* Title */}
@@ -160,7 +152,7 @@ const CardView = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="font-display text-3xl md:text-4xl font-bold text-gradient-gold mb-4"
+            className={`font-display text-3xl md:text-4xl font-bold mb-4 ${template.colors.text}`}
           >
             {card.title}
           </motion.h1>
@@ -199,7 +191,7 @@ const CardView = () => {
               transition={{ delay: 0.6 }}
               className="mb-8"
             >
-              <div className="flex items-center justify-center gap-2 text-primary mb-4">
+              <div className={`flex items-center justify-center gap-2 ${template.colors.text} mb-4`}>
                 <Clock className="w-5 h-5" />
                 <span className="text-sm font-medium">Contagem Regressiva</span>
               </div>
@@ -212,9 +204,9 @@ const CardView = () => {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="bg-primary/10 rounded-xl px-4 py-3 min-w-[70px]"
+                    className={`bg-gradient-to-br ${template.colors.accent} rounded-xl px-4 py-3 min-w-[70px]`}
                   >
-                    <div className="text-2xl font-bold text-primary">
+                    <div className={`text-2xl font-bold ${template.colors.text}`}>
                       {String(item.value).padStart(2, "0")}
                     </div>
                     <div className="text-xs text-muted-foreground">
@@ -233,7 +225,7 @@ const CardView = () => {
             transition={{ delay: 0.7 }}
             className="flex items-center justify-center gap-2 text-muted-foreground"
           >
-            <Heart className="w-4 h-4 text-primary" />
+            <Heart className={`w-4 h-4 ${template.colors.text}`} />
             <span className="text-sm">
               Criado com{" "}
               <span className="text-gradient-gold font-semibold">Festiva</span>

@@ -14,7 +14,6 @@ import {
   Plus,
   Clock,
   Share2,
-  Download,
   LogOut,
   Wand2,
   Gift,
@@ -24,6 +23,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { TemplateSelector, getTemplate } from "@/components/CardTemplates";
 
 interface CardItem {
   id: string;
@@ -305,7 +305,7 @@ const Dashboard = () => {
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center justify-between">
                       <span className="truncate">{card.title}</span>
-                      <span className="text-2xl">🎄</span>
+                      <span className="text-2xl">{getTemplate(card.template).emoji}</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -445,6 +445,17 @@ const Dashboard = () => {
                       }))
                     }
                     className="bg-background/50 min-h-[120px]"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Template do Cartão</Label>
+                  <TemplateSelector
+                    selected={newCard.template}
+                    onSelect={(templateId) =>
+                      setNewCard((prev) => ({ ...prev, template: templateId }))
+                    }
+                    isPremium={isPremium}
                   />
                 </div>
 
