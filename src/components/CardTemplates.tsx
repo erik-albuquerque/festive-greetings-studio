@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import { Crown } from "lucide-react";
 
 export interface CardTemplate {
@@ -131,41 +132,41 @@ interface TemplateSelectorProps {
   isPremium: boolean;
 }
 
-export const TemplateSelector = ({
-  selected,
-  onSelect,
-  isPremium,
-}: TemplateSelectorProps) => {
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {CARD_TEMPLATES.map((template) => {
-        const isLocked = template.isPremium && !isPremium;
-        const isSelected = selected === template.id;
+export const TemplateSelector = forwardRef<HTMLDivElement, TemplateSelectorProps>(
+  ({ selected, onSelect, isPremium }, ref) => {
+    return (
+      <div ref={ref} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {CARD_TEMPLATES.map((template) => {
+          const isLocked = template.isPremium && !isPremium;
+          const isSelected = selected === template.id;
 
-        return (
-          <button
-            key={template.id}
-            type="button"
-            onClick={() => !isLocked && onSelect(template.id)}
-            disabled={isLocked}
-            className={`relative p-3 rounded-xl border-2 transition-all ${
-              isSelected
-                ? "border-primary bg-primary/10"
-                : isLocked
-                ? "border-border/30 opacity-50 cursor-not-allowed"
-                : "border-border/50 hover:border-primary/50"
-            }`}
-          >
-            <div className="text-2xl mb-1">{template.emoji}</div>
-            <div className="text-xs font-medium truncate">{template.name}</div>
-            {isLocked && (
-              <div className="absolute top-1 right-1">
-                <Crown className="w-3 h-3 text-primary" />
-              </div>
-            )}
-          </button>
-        );
-      })}
-    </div>
-  );
-};
+          return (
+            <button
+              key={template.id}
+              type="button"
+              onClick={() => !isLocked && onSelect(template.id)}
+              disabled={isLocked}
+              className={`relative p-3 rounded-xl border-2 transition-all ${
+                isSelected
+                  ? "border-primary bg-primary/10"
+                  : isLocked
+                  ? "border-border/30 opacity-50 cursor-not-allowed"
+                  : "border-border/50 hover:border-primary/50"
+              }`}
+            >
+              <div className="text-2xl mb-1">{template.emoji}</div>
+              <div className="text-xs font-medium truncate">{template.name}</div>
+              {isLocked && (
+                <div className="absolute top-1 right-1">
+                  <Crown className="w-3 h-3 text-primary" />
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+);
+
+TemplateSelector.displayName = "TemplateSelector";
