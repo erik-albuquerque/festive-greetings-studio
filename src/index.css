@@ -6,52 +6,57 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 45 30% 95%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 15%;
 
-    --card: 0 0% 6%;
-    --card-foreground: 45 30% 95%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 15%;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 45 30% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 43 65% 68%;
-    --primary-foreground: 0 0% 4%;
+    --primary: 0 72% 51%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 45 30% 95%;
+    --secondary: 43 65% 68%;
+    --secondary-foreground: 0 0% 15%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
     --accent: 43 65% 68%;
-    --accent-foreground: 0 0% 4%;
+    --accent-foreground: 0 0% 15%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 45 30% 95%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 43 65% 68%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 72% 51%;
 
     --radius: 0.75rem;
 
-    /* Custom Festiva tokens */
+    /* Custom Festiva tokens - Christmas theme */
     --gold: 43 65% 68%;
     --gold-light: 43 70% 78%;
-    --gold-dark: 43 60% 55%;
-    --festiva-bg: 0 0% 4%;
-    --festiva-card: 0 0% 8%;
-    --festiva-border: 43 30% 20%;
+    --gold-dark: 43 55% 50%;
+    --red: 0 72% 51%;
+    --red-light: 0 72% 65%;
+    --red-dark: 0 72% 40%;
+    --festiva-bg: 0 0% 100%;
+    --festiva-card: 0 0% 98%;
+    --festiva-border: 0 0% 90%;
     
     /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(43 65% 68%) 0%, hsl(43 50% 55%) 100%);
-    --gradient-dark: linear-gradient(180deg, hsl(0 0% 6%) 0%, hsl(0 0% 4%) 100%);
-    --gradient-glow: radial-gradient(ellipse at center, hsl(43 65% 68% / 0.15) 0%, transparent 70%);
+    --gradient-gold: linear-gradient(135deg, hsl(43 65% 68%) 0%, hsl(43 55% 50%) 100%);
+    --gradient-red: linear-gradient(135deg, hsl(0 72% 51%) 0%, hsl(0 72% 40%) 100%);
+    --gradient-christmas: linear-gradient(135deg, hsl(0 72% 51%) 0%, hsl(43 65% 68%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(0 72% 51% / 0.1) 0%, transparent 70%);
     
     /* Shadows */
-    --shadow-gold: 0 4px 30px hsl(43 65% 68% / 0.2);
-    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.4);
+    --shadow-gold: 0 4px 30px hsl(43 65% 68% / 0.3);
+    --shadow-red: 0 4px 30px hsl(0 72% 51% / 0.2);
+    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.08);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -59,8 +64,14 @@
   }
 
   .dark {
-    --background: 0 0% 4%;
-    --foreground: 45 30% 95%;
+    --background: 0 0% 8%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 95%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
   }
 }
 
@@ -86,30 +97,51 @@
 @layer components {
   .text-gradient-gold {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(43 70% 78%) 0%, hsl(43 65% 68%) 50%, hsl(43 50% 55%) 100%);
+    background-image: linear-gradient(135deg, hsl(43 70% 78%) 0%, hsl(43 65% 68%) 50%, hsl(43 55% 50%) 100%);
+  }
+
+  .text-gradient-red {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(0 72% 65%) 0%, hsl(0 72% 51%) 50%, hsl(0 72% 40%) 100%);
+  }
+
+  .text-gradient-christmas {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(0 72% 51%) 0%, hsl(43 65% 68%) 100%);
   }
 
   .border-gradient-gold {
-    border-image: linear-gradient(135deg, hsl(43 65% 68%) 0%, hsl(43 50% 55%) 100%) 1;
+    border-image: linear-gradient(135deg, hsl(43 65% 68%) 0%, hsl(43 55% 50%) 100%) 1;
   }
 
   .bg-festiva-glow {
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, hsl(43 65% 68% / 0.12) 0%, transparent 60%);
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, hsl(0 72% 51% / 0.08) 0%, transparent 60%);
   }
 
   .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50;
-    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.3), inset 0 1px 0 hsl(43 65% 68% / 0.1);
+    @apply bg-card/90 backdrop-blur-xl border border-border;
+    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.08), inset 0 1px 0 hsl(0 0% 100% / 0.5);
   }
 
   .btn-gold {
-    @apply bg-primary text-primary-foreground font-semibold px-8 py-3 rounded-lg;
+    @apply bg-secondary text-secondary-foreground font-semibold px-8 py-3 rounded-lg;
     box-shadow: 0 4px 20px hsl(43 65% 68% / 0.3);
     transition: var(--transition-smooth);
   }
 
   .btn-gold:hover {
     box-shadow: 0 6px 30px hsl(43 65% 68% / 0.4);
+    transform: translateY(-2px);
+  }
+
+  .btn-red {
+    @apply bg-primary text-primary-foreground font-semibold px-8 py-3 rounded-lg;
+    box-shadow: 0 4px 20px hsl(0 72% 51% / 0.3);
+    transition: var(--transition-smooth);
+  }
+
+  .btn-red:hover {
+    box-shadow: 0 6px 30px hsl(0 72% 51% / 0.4);
     transform: translateY(-2px);
   }
 
