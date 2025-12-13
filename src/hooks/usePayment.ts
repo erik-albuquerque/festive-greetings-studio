@@ -19,7 +19,7 @@ export function usePayment() {
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: {
           plan,
-          returnUrl: `${window.location.origin}/dashboard`,
+          returnUrl: `${window.location.origin}/dashboard?payment=pending`,
         },
       });
 

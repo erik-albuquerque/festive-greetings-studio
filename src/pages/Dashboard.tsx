@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useVerifyPayment } from "@/hooks/useVerifyPayment";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import {
   Crown,
   ExternalLink,
   Trash2,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,8 +40,10 @@ interface CardItem {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, loading: authLoading, signOut } = useAuth();
-  const { isPremium, plan, isLoading: subLoading } = useSubscription();
+  const { isPremium, plan, isLoading: subLoading, refetch: refetchSubscription } = useSubscription();
+  const { verifyPayment, isVerifying } = useVerifyPayment();
   const queryClient = useQueryClient();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -58,6 +62,14 @@ const Dashboard = () => {
       navigate("/auth");
     }
   }, [user, authLoading, navigate]);
+
+  // Auto-verify payment on return from checkout
+  useEffect(() => {
+    const fromCheckout = searchParams.get('payment');
+    if (fromCheckout === 'pending' && user && !isPremium) {
+      verifyPayment();
+    }
+  }, [searchParams, user, isPremium]);
 
   // Fetch cards
   const { data: cards = [], isLoading: cardsLoading } = useQuery({
@@ -246,14 +258,25 @@ const Dashboard = () => {
 
           <div className="flex items-center gap-4">
             {!isPremium && (
-              <Button
-                variant="gold-outline"
-                size="sm"
-                onClick={() => navigate("/#pricing")}
-              >
-                <Crown className="w-4 h-4 mr-1" />
-                Upgrade
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => verifyPayment()}
+                  disabled={isVerifying}
+                >
+                  <RefreshCw className={`w-4 h-4 mr-1 ${isVerifying ? 'animate-spin' : ''}`} />
+                  {isVerifying ? 'Verificando...' : 'Verificar Pagamento'}
+                </Button>
+                <Button
+                  variant="gold-outline"
+                  size="sm"
+                  onClick={() => navigate("/#pricing")}
+                >
+                  <Crown className="w-4 h-4 mr-1" />
+                  Upgrade
+                </Button>
+              </>
             )}
             <span className="text-sm text-muted-foreground hidden sm:block">
               Plano: <span className="capitalize text-foreground">{plan}</span>
